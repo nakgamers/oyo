@@ -14,7 +14,6 @@ echo 'Enter Phone Number : ';
 $phone_number = trim(fgets(STDIN)); 
 
 $ch = curl_init();
-
 curl_setopt($ch, CURLOPT_URL, 'https://api.oyorooms.com/v2/users/generate_otp?phone='.$phone_number.'&nod=4&intent=login&sms_auto_retrieval=true&country_code=%2B62&version=20205&partner_app_version=20205&android_id='.generateRandomString(16).'&idfa=&sid=1551940465205');
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
@@ -42,12 +41,14 @@ if($json->is_user_present == 1){
 	echo "Nomor sudah terdaftar";
 	die();
 }
-
+$json = json_decode($result);
+if($json->is_user_present == 0){
+	echo "Nomor Siap di gas";
+}
 echo 'Enter OTP : '; 
 $otp = trim(fgets(STDIN)); 
-
-echo 'Enter Referral Code : '; 
-$referral = trim(fgets(STDIN)); 
+echo 'Enter repp : '; 
+$otps = trim(fgets(STDIN)); 
 
 $ch = curl_init();
 
@@ -65,7 +66,7 @@ curl_setopt($ch, CURLOPT_POSTFIELDS, '{
 	"name": "'.generateRandomString(10).'",
 	"phone": "'.$phone_number.'",
 	"push_type": "gcm",
-	"referral_code": "'.$referral.'",
+	"referral_code": "'.$otps.'",
 	"token": "c-PeIXwYYwg:APA91bHHQLHnS0FvSIOYJpN-hBJXYHxc1xQh8FrMZaQawBVPVyXxk77vTz7LWC4rtApBrZb3p4pOwJRD2JBMq0u3sChUgpasQFGcN_HNAGCscrcREwL-trFIBX3votCcFY1bn7eBmuCd",
 	"updated_at": 0
 }');
@@ -92,7 +93,10 @@ $json = json_decode($result);
 
 if($json->success == 0){
 	echo $json->error->message;
-	die();
+}
+
+if($josn->success == 1){
+
 }
 
 echo $json->phone." Berhasil mendaftar OYO"; 
